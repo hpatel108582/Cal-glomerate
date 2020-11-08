@@ -38,8 +38,10 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
+    "moment": "^2.29.1",
     "prop-types": "^15.7.2",
-    "react-google-login": "^5.1.21",
+    "react-big-calendar": "^0.28.5",
+    "react-google-login": "^5.1.22",
     "react-scroll-to-bottom": "^4.0.0",
     "socket.io-client": "^2.3.1",
     "uuid": "^8.3.1"
