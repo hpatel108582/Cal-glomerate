@@ -1,6 +1,6 @@
-'''
+"""
 Python Appeasment
-'''
+"""
 # pylint: disable=no-member
 # pylint: disable=wrong-import-position
 # pylint: disable=global-statement
@@ -37,41 +37,45 @@ import models
 
 ##SENDS CHAT HISTORY TO ALL PARTICIPANTS
 
-def push_new_user_to_db(ident, name, email, ccode):
-    '''
+
+def push_new_user_to_db(ident, name, email):
+    """
     Pushes new user to database.
-    '''
-    db.session.add(models.AuthUser(ident, name, email, ccode))
+    """
+    db.session.add(models.AuthUser(ident, name, email))
     db.session.commit()
 
 
 def get_sid():
-    '''
+    """
     returns sid.
-    '''
+    """
     sid = flask.request.sid
     return sid
+
+
 ##SOCKET EVENTS
 @socketio.on("connect")
 def on_connect():
-    '''
+    """
     Runs on connect.
-    '''
+    """
     print("Someone connected!")
 
 
 @socketio.on("disconnect")
 def on_disconnect():
-    '''
+    """
     Runs on disconnect.
-    '''
+    """
     print("Someone disconnected!")
+
 
 @socketio.on("new google user")
 def on_new_google_user(data):
-    '''
+    """
     Runs verification on google token.
-    '''
+    """
     print("Beginning to authenticate data: ", data)
     sid = get_sid()
     try:
@@ -87,7 +91,7 @@ def on_new_google_user(data):
             is not None
         )
         if not exists:
-            push_new_user_to_db(userid, data["name"], data["email"], "")
+            push_new_user_to_db(userid, data["name"], data["email"])
         socketio.emit("Verified", data["name"], room=sid)
         return userid
     except ValueError:
@@ -101,9 +105,9 @@ def on_new_google_user(data):
 
 @app.route("/")
 def hello():
-    '''
+    """
     Runs at page-load.
-    '''
+    """
     models.db.create_all()
     db.session.commit()
     return flask.render_template("index.html")
@@ -116,4 +120,3 @@ if __name__ == "__main__":
         port=int(os.getenv("PORT", "8080")),
         debug=True,
     )
-    
