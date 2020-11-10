@@ -13,11 +13,12 @@ class AuthUser(db.Model):
     """
 
     id = db.Column(db.Integer, primary_key=True)
+    userid = db.Column(db.String(120))
     name = db.Column(db.String(120))
     email = db.Column(db.String(120))
 
-    def __init__(self, id, name, email):
-        self.id = id
+    def __init__(self, userid, name, email):
+        self.userid = userid
         self.name = name
         self.email = email
 
@@ -30,13 +31,11 @@ class Calendars(db.Model):
     Defines Calendars table.
     """
 
-    id = db.Column(db.Integer, primary_key=True)
+    ccode = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer)
-    ccode = db.Column(db.Integer)
 
-    def __init__(self, userid, ccode):
+    def __init__(self, userid):
         self.userid = userid
-        self.ccode = ccode
 
     def __repr__(self):
         return "< userid: {}\nccode: {}".format(self.userid, self.ccode)
