@@ -56,7 +56,7 @@ def get_sid():
 
 def add_event(event):
     """
-    adds an event
+    adds an event, returns id of added event
     """
     ccode, title, start, end, desc = (
         event["ccode"],
@@ -65,8 +65,20 @@ def add_event(event):
         event["end"],
         event["desc"],
     )
-    db.session.add(models.Event(ccode, title, start, end, desc))
+    addedEvent = models.Event(ccode, title, start, end, desc)
+    db.session.add(addedEvent)
     db.session.commit()
+    return addedEvent.id
+
+
+def add_calendar_for_user(userid):
+    """
+    adds an event, returns the ccode of the new calendar
+    """
+    addedCalendar = models.Calendars(userid)
+    db.session.add(addedCalendar)
+    db.session.commit()
+    return addedCalendar.ccode
 
 
 ##SOCKET EVENTS
@@ -118,6 +130,26 @@ def on_new_google_user(data):
         return "Unverified."
 
 
+@socketio.on("add calendar")
+def on_add_calendar(data):
+    """
+    add a new calednar for user
+    """
+    userid = data["userid"]
+    ccode = add_calendar_for_user(userid)
+    print(ccode)
+
+
+@socketio.on("add event")
+def on_add_event(data):
+    """
+    add a new event for to calendar
+    """
+    event = data["event"]
+    addedEventId = add_event(event)
+    print(addedEventId)
+
+
 @app.route("/")
 def hello():
     """
@@ -134,6 +166,8 @@ def hello():
             "desc": "I'm hungry, let's eat",
         }
     )
+
+    add_calendar_for_user({"userid": "3"})
     return flask.render_template("index.html")
 
 
