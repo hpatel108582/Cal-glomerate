@@ -33,6 +33,8 @@ db = flask_sqlalchemy.SQLAlchemy(app)
 db.init_app(app)
 db.app = app
 
+CALENDER_EVENT_CHANNEL='calendar_event'
+
 import models
 
 def push_new_user_to_db(ident, name, email):
