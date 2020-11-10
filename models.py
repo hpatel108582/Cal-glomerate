@@ -16,7 +16,7 @@ class AuthUser(db.Model):
     name = db.Column(db.String(120))
     email = db.Column(db.String(120))
 
-    def __init__(self, id, name, email, ccode):
+    def __init__(self, id, name, email):
         self.id = id
         self.name = name
         self.email = email

@@ -3,17 +3,15 @@ import ReactDOM from 'react-dom';
 import { GoogleLogin } from 'react-google-login';
 import { Socket } from './Socket';
 import './loginstyle.css';
+import { Cal_comp } from "./CalenderComp.jsx";
 
 export default function Login() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
-  const [pfp, setPfp] = useState('');
 
   function loginUser(response) {
     const name = response.getBasicProfile().getName();
     const email = response.getBasicProfile().getEmail();
-    const pfpUrl = '<img src="' + response.getBasicProfile().getImageUrl() + '">';
-    setPfp(pfpUrl);
     const idToken = response.getAuthResponse().id_token;
     Socket.emit('new google user', {name: name, email: email, idtoken: idToken});
   }
@@ -32,11 +30,8 @@ export default function Login() {
   }
 
   verifiedSession();
-
   if (loggedIn) {
-    return (
-      <div> This is a test </div>
-      );
+    return (<div><Cal_comp /></div>);
   }
 
   return (
