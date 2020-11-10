@@ -39,7 +39,7 @@ export default function Login() {
       <div className="inner">
         <h1 className="header">Calglomerate</h1>
         <GoogleLogin
-          clientId="698177391473-sfucar7t4qoum5rpt14mso7vkbuh1lao.apps.googleusercontent.com"
+          clientId="658056760445-ejq8q635n1948vqieqf95vsa6c6e1fvp.apps.googleusercontent.com"
           buttonText="Login"
           onSuccess={loginUser}
           onFailure={loginUserFail}

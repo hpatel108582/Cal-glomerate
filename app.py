@@ -117,7 +117,7 @@ def on_new_google_user(data):
         idinfo = id_token.verify_oauth2_token(
             data["idtoken"],
             requests.Request(),
-            "698177391473-sfucar7t4qoum5rpt14mso7vkbuh1lao.apps.googleusercontent.com",
+            "658056760445-ejq8q635n1948vqieqf95vsa6c6e1fvp.apps.googleusercontent.com",
         )
         userid = idinfo["sub"]
         print("Verified user. Proceeding to check database.")
