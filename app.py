@@ -35,9 +35,6 @@ db.app = app
 
 import models
 
-##SENDS CHAT HISTORY TO ALL PARTICIPANTS
-
-
 def push_new_user_to_db(ident, name, email):
     """
     Pushes new user to database.
@@ -45,14 +42,12 @@ def push_new_user_to_db(ident, name, email):
     db.session.add(models.AuthUser(ident, name, email))
     db.session.commit()
 
-
 def get_sid():
     """
     returns sid.
     """
     sid = flask.request.sid
     return sid
-
 
 def add_event(event):
     """
@@ -70,7 +65,6 @@ def add_event(event):
     db.session.commit()
     return addedEvent.id
 
-
 def add_calendar_for_user(userid):
     """
     adds an event, returns the ccode of the new calendar
@@ -80,7 +74,21 @@ def add_calendar_for_user(userid):
     db.session.commit()
     return addedCalendar.ccode
 
-
+def emit_events_to_calender(channel, cal_code):
+    '''
+    Emits all calendar events along channel
+    '''
+    all_events = [
+        {
+            "start": record.start,
+            "end": record.end,
+            "title": record.title,
+        }
+        for record in db.session.query(models.Event).filter_by(ccode=cal_code).all()
+    ]
+    for event in all_events:
+        socketio.emit(channel, event)
+    
 ##SOCKET EVENTS
 @socketio.on("connect")
 def on_connect():
