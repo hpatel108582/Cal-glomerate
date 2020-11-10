@@ -102,7 +102,7 @@ def on_new_google_user(data):
         userid = idinfo["sub"]
         print("Verified user. Proceeding to check database.")
         exists = (
-            db.session.query(models.AuthUser.id).filter_by(id=userid).scalar()
+            db.session.query(models.AuthUser.userid).filter_by(userid=userid).scalar()
             is not None
         )
         if not exists:
