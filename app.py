@@ -167,7 +167,7 @@ def hello():
         }
     )
 
-    add_calendar_for_user({"userid": "3"})
+    add_calendar_for_user("3")
     return flask.render_template("index.html")
 
 
