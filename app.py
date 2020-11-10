@@ -54,6 +54,21 @@ def get_sid():
     return sid
 
 
+def add_event(event):
+    """
+    adds an event
+    """
+    ccode, title, start, end, desc = (
+        event["ccode"],
+        event["title"],
+        event["start"],
+        event["end"],
+        event["desc"],
+    )
+    db.session.add(models.Event(ccode, title, start, end, desc))
+    db.session.commit()
+
+
 ##SOCKET EVENTS
 @socketio.on("connect")
 def on_connect():
@@ -110,6 +125,15 @@ def hello():
     """
     models.db.create_all()
     db.session.commit()
+    add_event(
+        {
+            "ccode": "2",
+            "title": "Lunch",
+            "start": "1604965556",
+            "end": "1604964556",
+            "desc": "I'm hungry, let's eat",
+        }
+    )
     return flask.render_template("index.html")
 
 
