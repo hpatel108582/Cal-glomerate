@@ -1,4 +1,7 @@
 # cal-glomerate
+
+Google download:  pip install google-oauth2-tool
+
 npm i react-big-calendar
 
 npm install moment --save
