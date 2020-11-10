@@ -12,7 +12,7 @@ class AuthUser(db.Model):
     Defines AuthHistory table.
     """
 
-    id = db.Column(db.String(25), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     email = db.Column(db.String(120))
 
@@ -30,12 +30,11 @@ class Calendars(db.Model):
     Defines Calendars table.
     """
 
-    id = db.Column(db.String(25), primary_key=True)
-    userid = db.Column(db.String(120))
-    ccode = db.Column(db.String(120))
+    id = db.Column(db.Integer, primary_key=True)
+    userid = db.Column(db.Integer)
+    ccode = db.Column(db.Integer)
 
-    def __init__(self, id, userid, ccode):
-        self.id = id
+    def __init__(self, userid, ccode):
         self.userid = userid
         self.ccode = ccode
 
@@ -48,15 +47,14 @@ class Event(db.Model):
     Defines Event table.
     """
 
-    id = db.Column(db.String(25), primary_key=True)
-    ccode = db.Column(db.String(120))
+    id = db.Column(db.Integer, primary_key=True)
+    ccode = db.Column(db.Integer)
     title = db.Column(db.String(120))
     start = db.Column(db.String(120))
     end = db.Column(db.String(120))
     desc = db.Column(db.String(120))
 
-    def __init__(self, id, ccode, title, start, end, desc):
-        self.id = id
+    def __init__(self, ccode, title, start, end, desc):
         self.ccode = ccode
         self.title = title
         self.start = start
