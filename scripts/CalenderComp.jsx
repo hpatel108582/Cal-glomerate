@@ -1,15 +1,70 @@
-import React from 'react';
+import  React, { useState } from 'react';
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
 import * as dates from './dates';
 import moment from 'moment';
 import './CalenderStyle.css';
 import { Socket } from './Socket';
 import ExampleControlSlot from './ControlSlot';
+import Modal from 'react-modal';
+import TimePicker from 'rc-time-picker';
+import ReactDOM from 'react-dom';
+import 'rc-time-picker/assets/index.css';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export function Cal_comp(){
     const [events, setEvents] = React.useState([]);
     const localizer = momentLocalizer(moment);
+    const [modal, setModal] = React.useState(0);
+    const format = 'h:mm a';
+    const [state,setState] = React.useState(
+        {
+            title: '',
+            start:'',
+            end:'',
+            date:''
+        }
+    )
+    const [startDate, setStartDate] = useState(new Date());
+    const now = moment().hour(0).minute(0);
+   
+   const dateToFormat = 'YYYY/MM/DD';
+   
+    function onSChange(value) {
+ 
+        console.log(value);
+        setState({...state,start:value.format(format)})
+        
+        
+  
+    } 
+
+    function onEChange(value) {
+        console.log(value && value.format(format));
+        setState({...state,end:value.format(format)})
+    }
     
+    
+    function handleChange(evt) {
+        const value = evt.target.value;
+        setState({
+            ...state,
+            [evt.target.name]: value
+        });
+  
+    }
+    function handleSubmit(event){
+      
+        event.preventDefault(); 
+        setState({title:'',start:'',date:'',end:''})
+      
+    }
+    function onDChange(value){
+        console.log(value)
+        console.log(typeof(value))
+        var newDate = value.toString()
+        setState({...state,date:moment(newDate).format("YYYY-MM-DD")})
+    }
     
   function new_Event() {
   React.useEffect(() => {
@@ -56,6 +111,52 @@ function handleSelect({start, end}){
 
  return (
       <div>
+       <button onClick={()=> setModal(true)}> Open Modal </button> 
+            <Modal  
+                isOpen={modal}
+                onRequestClose={()=>setModal(false)}
+            >
+            
+          <form onSubmit={handleSubmit}>
+      
+        <h1>Add Event</h1>
+        <input
+          type="text"
+          name="title"
+          value={state.title}
+          onChange={handleChange}
+        />
+        
+        <h3> Date </h3>
+     <DatePicker selected={startDate} onChange={onDChange} />
+        
+        <h3> Start Time </h3>
+            <TimePicker 
+                showSecond={false}
+                defaultValue={now}
+                name="starttime"
+                
+                onChange={onSChange}
+                format={format}
+                use12Hours
+                inputReadOnly
+            /> 
+            <h3> End  Time </h3>
+            <TimePicker 
+                showSecond={false}
+                defaultValue={now}
+                name="endtime"
+                
+                onChange={onEChange}
+                format={format}
+                use12Hours
+                inputReadOnly
+            /> 
+      
+      <input type="submit" value="Submit" onClick={()=> setModal(false) }/>
+      
+    </form>
+     </Modal>
         <Calendar
           selectable
           localizer={localizer}
