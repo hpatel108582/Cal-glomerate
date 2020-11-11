@@ -8,7 +8,8 @@ import { Cal_comp } from "./CalenderComp.jsx";
 export default function Login() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
-
+  const [ccode, setCcode] = useState([-1]);
+  
   function loginUser(response) {
     const name = response.getBasicProfile().getName();
     const email = response.getBasicProfile().getEmail();
@@ -24,14 +25,15 @@ export default function Login() {
     React.useEffect(() => {
       Socket.on('Verified', (data) => {
         setLoggedIn(true);
-        setUsername(data);
+        setUsername(data.name);
+        setCcode(data.ccodes);
       });
-    });
+    }, []);
   }
-
   verifiedSession();
-  if (loggedIn) {
-    return (<div><Cal_comp /></div>);
+
+  if (loggedIn && ccode[0] != -1) {
+    return (<div><Cal_comp ccode={ccode}/></div>);
   }
 
   return (

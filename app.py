@@ -133,9 +133,7 @@ def on_new_google_user(data):
             push_new_user_to_db(userid, data["name"], data["email"])
             add_calendar_for_user(userid)
         all_ccodes = [ record.ccode for record in db.session.query(models.Calendars).filter_by(userid=userid).all() ]
-        for x in all_ccodes:
-            print(x)
-        socketio.emit("Verified", data["name"], room=sid)
+        socketio.emit("Verified", {"name": data["name"], "ccodes": all_ccodes}, room=sid)
         return userid
     except ValueError:
         # Invalid token
@@ -149,7 +147,7 @@ def on_new_google_user(data):
 @socketio.on("add calendar")
 def on_add_calendar(data):
     """
-    add a new calednar for user
+    add a new calendar for user
     """
     userid = data["userid"]
     ccode = add_calendar_for_user(userid)
@@ -167,7 +165,6 @@ def on_add_event(data):
 
 @socketio.on("get events")
 def send_events_to_calendar(data):
-    print("LOOKING FOR CALCODE: ", data)
     emit_events_to_calender("calender_event", data)
     print("SENT EVENTS!")
 
