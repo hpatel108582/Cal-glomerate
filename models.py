@@ -32,7 +32,7 @@ class Calendars(db.Model):
     """
 
     ccode = db.Column(db.Integer, primary_key=True)
-    userid = db.Column(db.Integer)
+    userid = db.Column(db.String(120))
 
     def __init__(self, userid):
         self.userid = userid
