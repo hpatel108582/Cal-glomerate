@@ -20,10 +20,10 @@ export function Cal_comp(){
       console.log("end: " + data['end']);
 
       let intstart = parseInt(data['start']);
-      let start = new Date(intstart);
+      let start = new Date(intstart*1000);
       console.log(start);
       let intend = parseInt(data['end']);
-      let end = new Date(intend);
+      let end = new Date(intend*1000);
             console.log(end);
 
       let title= data['title'];

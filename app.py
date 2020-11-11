@@ -33,7 +33,7 @@ db = flask_sqlalchemy.SQLAlchemy(app)
 db.init_app(app)
 db.app = app
 
-CALENDER_EVENT_CHANNEL='calendar_event'
+CALENDER_EVENT_CHANNEL='calender_event'
 
 import models
 
@@ -164,7 +164,7 @@ def on_add_event(data):
 @socketio.on("get events")
 def send_events_to_calendar(data):
     print("LOOKING FOR CALCODE: ", data)
-    emit_events_to_calender("calender_event", data)
+    emit_events_to_calender(CALENDER_EVENT_CHANNEL, data)
     print("SENT EVENTS!")
 
 @app.route("/")
