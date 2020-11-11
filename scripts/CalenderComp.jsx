@@ -39,6 +39,7 @@ export function Cal_comp(){
     });
   }, []);
  }
+ 
 function handleSelect({start, end}){
     const title = window.prompt('New Event name');
     if (title)
