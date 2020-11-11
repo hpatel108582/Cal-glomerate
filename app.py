@@ -33,7 +33,7 @@ db = flask_sqlalchemy.SQLAlchemy(app)
 db.init_app(app)
 db.app = app
 
-CALENDER_EVENT_CHANNEL='calender_event'
+CALENDER_EVENT_CHANNEL='calendar_event'
 
 import models
 
@@ -131,6 +131,10 @@ def on_new_google_user(data):
         )
         if not exists:
             push_new_user_to_db(userid, data["name"], data["email"])
+            add_calendar_for_user(userid)
+        all_ccodes = [ record.ccode for record in db.session.query(models.Calendars).filter_by(userid=userid).all() ]
+        for x in all_ccodes:
+            print(x)
         socketio.emit("Verified", data["name"], room=sid)
         return userid
     except ValueError:
@@ -164,7 +168,7 @@ def on_add_event(data):
 @socketio.on("get events")
 def send_events_to_calendar(data):
     print("LOOKING FOR CALCODE: ", data)
-    emit_events_to_calender(CALENDER_EVENT_CHANNEL, data)
+    emit_events_to_calender("calender_event", data)
     print("SENT EVENTS!")
 
 @app.route("/")
@@ -174,17 +178,6 @@ def hello():
     """
     models.db.create_all()
     db.session.commit()
-    add_event(
-        {
-            "ccode": "2",
-            "title": "Lunch",
-            "start": "1604965556",
-            "end": "1604964556",
-            "desc": "I'm hungry, let's eat",
-        }
-    )
-
-    add_calendar_for_user("3")
     return flask.render_template("index.html")
 
 
