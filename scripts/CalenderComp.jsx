@@ -16,7 +16,6 @@ export function Cal_comp(){
     const [events, setEvents] = React.useState([]);
     const localizer = momentLocalizer(moment);
     const [modal, setModal] = React.useState(0);
-    const format = 'h:mm a';
     const [state,setState] = React.useState(
         {
             title: '',
@@ -27,7 +26,7 @@ export function Cal_comp(){
     )
     const [startDate, setStartDate] = useState(new Date());
     const now = moment().hour(0).minute(0);
-   
+   const format = 'hh:mm a';
    const dateToFormat = 'YYYY/MM/DD';
    
     function onSChange(value) {
@@ -53,12 +52,26 @@ export function Cal_comp(){
         });
   
     }
-    function handleSubmit(event){
+    const handleSubmit= (event)=> {
       
         event.preventDefault(); 
-        setState({title:'',start:'',date:'',end:''})
+        const { title,date,start,end } =state
+      console.log(title);
+      console.log(date);
+      console.log(start);
+      console.log(end);
+      Socket.emit('new event',  {
+          'title': title,
+          'date':date,
+          'start':start,
+          'end':end
+          
+      })
+      
+     
       
     }
+    
     function onDChange(value){
         console.log(value)
         console.log(typeof(value))
@@ -74,10 +87,10 @@ export function Cal_comp(){
       console.log("end: " + data['end']);
 
       let intstart = parseInt(data['start']);
-      let start = new Date(intstart);
+      let start = new Date(intstart*1000);
       console.log(start);
       let intend = parseInt(data['end']);
-      let end = new Date(intend);
+      let end = new Date(intend*1000);
             console.log(end);
 
       let title= data['title'];
@@ -153,12 +166,12 @@ function handleSelect({start, end}){
                 inputReadOnly
             /> 
       
-      <input type="submit" value="Submit" onClick={()=> setModal(false) }/>
+      <button  type = "submit" onClick={()=> setModal(true)}>Send</button>
       
     </form>
      </Modal>
         <Calendar
-          selectable
+        //   selectable
           localizer={localizer}
           events={events}
           step={60}
@@ -166,8 +179,8 @@ function handleSelect({start, end}){
           max={dates.add(dates.endOf(new Date(2015, 17, 1), 'day'), -1, 'hours')}
           scrollToTime={new Date(1970, 1, 1, 6)}
           defaultDate={new Date(2020, 11, 1)}
-          onSelectEvent={event => alert(event.title)}
-          onSelectSlot={handleSelect}
+        //   onSelectEvent={event => alert(event.title)}
+        //   onSelectSlot={handleSelect}
         />
       </div>
     );
