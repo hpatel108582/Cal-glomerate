@@ -10,6 +10,7 @@ export function Cal_comp(){
     const [events, setEvents] = React.useState([]);
     const localizer = momentLocalizer(moment);
     
+  React.useEffect(() => { Socket.emit('get events', 2); }, []);
     
   function new_Event() {
   React.useEffect(() => {
@@ -36,7 +37,7 @@ export function Cal_comp(){
         ],
       );
     });
-  });
+  }, []);
  }
 function handleSelect({start, end}){
     const title = window.prompt('New Event name');
