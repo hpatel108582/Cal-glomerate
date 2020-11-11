@@ -7,7 +7,6 @@ const rootElement = document.getElementById('content');
 ReactDOM.render(
   <React.StrictMode>
     <Login />
-    <Cal_comp />
   </React.StrictMode>,
   rootElement,
 );

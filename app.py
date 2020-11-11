@@ -80,6 +80,7 @@ def emit_events_to_calender(channel, cal_code):
     '''
     Emits all calendar events along channel
     '''
+    sid = get_sid()
     all_events = [
         {
             "start": record.start,
@@ -89,7 +90,8 @@ def emit_events_to_calender(channel, cal_code):
         for record in db.session.query(models.Event).filter_by(ccode=cal_code).all()
     ]
     for event in all_events:
-        socketio.emit(channel, event)
+        print(event)
+        socketio.emit(channel, event, room=sid)
     
 ##SOCKET EVENTS
 @socketio.on("connect")
@@ -159,6 +161,11 @@ def on_add_event(data):
     addedEventId = add_event(event)
     print(addedEventId)
 
+@socketio.on("get events")
+def send_events_to_calendar(data):
+    print("LOOKING FOR CALCODE: ", data)
+    emit_events_to_calender("calender_event", data)
+    print("SENT EVENTS!")
 
 @app.route("/")
 def hello():
