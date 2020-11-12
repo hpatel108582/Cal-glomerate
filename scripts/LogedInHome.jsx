@@ -11,7 +11,7 @@ export function HomePage(props) {
             <MergeCalenders ccode = {ccode} />
             <Create_event ccode={ccode} />        
         </div>
-        <div className="calender_Side"><Cal_comp ccode={ccode} /></div>
+        <div className="calender_side"><Cal_comp ccode={ccode} /></div>
         </div>
     );
 }

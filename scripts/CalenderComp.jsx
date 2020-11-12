@@ -35,7 +35,7 @@ export function Cal_comp(props){
         ],
       );
     });
-  }, []);
+  });
  }
  
 // function handleSelect({start, end}){

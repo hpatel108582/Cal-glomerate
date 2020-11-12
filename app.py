@@ -217,17 +217,7 @@ def hello():
     """
     models.db.create_all()
     db.session.commit()
-    add_event(
-        {
-            "ccode": "2",
-            "title": "Lunch",
-            "start": "1604965556",
-            "end": "1604964556",
-            "desc": "I'm hungry, let's eat",
-        }
-    )
 
-    add_calendar_for_user("3")
     return flask.render_template("index.html")
 
 
