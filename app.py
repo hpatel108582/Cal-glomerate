@@ -13,6 +13,7 @@ import flask_sqlalchemy
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from datetime import datetime
+from dbInterface import dbInterfaceClass
 
 app = flask.Flask(__name__)
 
@@ -34,16 +35,14 @@ db = flask_sqlalchemy.SQLAlchemy(app)
 db.init_app(app)
 db.app = app
 
-CALENDER_EVENT_CHANNEL='calendar_event'
+
+CALENDER_EVENT_CHANNEL = "calendar_event"
 
 import models
 
-def push_new_user_to_db(ident, name, email):
-    """
-    Pushes new user to database.
-    """
-    db.session.add(models.AuthUser(ident, name, email))
-    db.session.commit()
+
+dbFunctions = dbInterfaceClass(db, models)
+
 
 def get_sid():
     """
@@ -52,48 +51,7 @@ def get_sid():
     sid = flask.request.sid
     return sid
 
-def add_event(event):
-    """
-    adds an event, returns id of added event
-    """
-    ccode, title, start, end, desc = (
-        event["ccode"],
-        event["title"],
-        event["start"],
-        event["end"],
-        event["desc"],
-    )
-    addedEvent = models.Event(ccode, title, start, end, desc)
-    db.session.add(addedEvent)
-    db.session.commit()
-    return addedEvent.id
 
-def add_calendar_for_user(userid):
-    """
-    adds an event, returns the ccode of the new calendar
-    """
-    addedCalendar = models.Calendars(userid)
-    db.session.add(addedCalendar)
-    db.session.commit()
-    return addedCalendar.ccode
-
-def emit_events_to_calender(channel, cal_code):
-    '''
-    Emits all calendar events along channel
-    '''
-    sid = get_sid()
-    all_events = [
-        {
-            "start": record.start,
-            "end": record.end,
-            "title": record.title,
-        }
-        for record in db.session.query(models.Event).filter_by(ccode=cal_code).all()
-    ]
-    for event in all_events:
-        print(event)
-        socketio.emit(channel, event, room=sid)
-    
 ##SOCKET EVENTS
 @socketio.on("connect")
 def on_connect():
@@ -131,10 +89,17 @@ def on_new_google_user(data):
             is not None
         )
         if not exists:
-            push_new_user_to_db(userid, data["name"], data["email"])
-            add_calendar_for_user(userid)
-        all_ccodes = [ record.ccode for record in db.session.query(models.Calendars).filter_by(userid=userid).all() ]
-        socketio.emit("Verified", {"name": data["name"], "ccodes": all_ccodes}, room=sid)
+            dbFunctions.push_new_user_to_db(userid, data["name"], data["email"])
+            dbFunctions.add_calendar_for_user(userid)
+        all_ccodes = [
+            record.ccode
+            for record in db.session.query(models.Calendars)
+            .filter_by(userid=userid)
+            .all()
+        ]
+        socketio.emit(
+            "Verified", {"name": data["name"], "ccodes": all_ccodes}, room=sid
+        )
         return userid
     except ValueError:
         # Invalid token
@@ -145,70 +110,67 @@ def on_new_google_user(data):
         return "Unverified."
 
 
-
 @socketio.on("add calendar")
 def on_add_calendar(data):
     """
     add a new calednar for user
     """
     userid = data["userid"]
-    ccode = add_calendar_for_user(userid)
+    ccode = dbFunctions.add_calendar_for_user(userid)
     print(ccode)
 
 
 @socketio.on("get events")
 def send_events_to_calendar(data):
     print("LOOKING FOR CALCODE: ", data)
-    emit_events_to_calender("calender_event", data)
+    sid = get_sid()
+    all_events = dbFunctions.emit_events_to_calender("calender_event", data, sid)
+
+    for event in all_events:
+        print(event)
+        socketio.emit("calender_event", event, room=sid)
+
     print("SENT EVENTS!")
 
 
-    
-def time_convert(time,date):
-    time=time.split()
-    if time[1]=="pm":
-        time=time[0]+" PM"
-    elif time[1]=="am":
-        time=time[0]+" AM"
-    military_time = datetime.strptime(time, '%I:%M %p').strftime('%H:%M')
-    date_string = date+"T"+military_time
-    format_date = datetime.strptime(date_string, '%Y-%m-%dT%H:%M')
+def time_convert(time, date):
+    time = time.split()
+    if time[1] == "pm":
+        time = time[0] + " PM"
+    elif time[1] == "am":
+        time = time[0] + " AM"
+    military_time = datetime.strptime(time, "%I:%M %p").strftime("%H:%M")
+    date_string = date + "T" + military_time
+    format_date = datetime.strptime(date_string, "%Y-%m-%dT%H:%M")
     return int(format_date.timestamp())
-    
+
+
 @socketio.on("new event")
 def on_new_event(data):
     """
     add a new event for to calendar
     """
-    title = data['title']
-    date = data['date']
-    start = data['start']
-    end = data['end']
-    ccode = data['ccode']
+    title = data["title"]
+    date = data["date"]
+    start = data["start"]
+    end = data["end"]
+    ccode = data["ccode"]
     print(start)
     print(end)
-    start_time=time_convert(start,date)
-    end_time=time_convert(end,date)
-    print(start_time,end_time)
-    addedEventId = add_event( {
+    start_time = time_convert(start, date)
+    end_time = time_convert(end, date)
+    print(start_time, end_time)
+    addedEventId = dbFunctions.add_event(
+        {
             "ccode": ccode,
             "title": title,
             "start": start_time,
             "end": end_time,
-            "desc": "some words"
-        })
+            "desc": "some words",
+        }
+    )
     print(addedEventId)
 
-# @socketio.on("add event")
-# def on_add_event(data):
-#     """
-#     add a new event for to calendar
-#     """
-#     event = data["event"]
-#     addedEventId = add_event(event)
-#     print(addedEventId)
-
-   
 
 @app.route("/")
 def hello():
