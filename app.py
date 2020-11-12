@@ -12,7 +12,6 @@ import flask_socketio
 import flask_sqlalchemy
 from google.oauth2 import id_token
 from google.auth.transport import requests
-from datetime import datetime
 
 app = flask.Flask(__name__)
 
@@ -132,7 +131,9 @@ def on_new_google_user(data):
         )
         if not exists:
             push_new_user_to_db(userid, data["name"], data["email"])
-        socketio.emit("Verified", data["name"], room=sid)
+            add_calendar_for_user(userid)
+        all_ccodes = [ record.ccode for record in db.session.query(models.Calendars).filter_by(userid=userid).all() ]
+        socketio.emit("Verified", {"name": data["name"], "ccodes": all_ccodes}, room=sid)
         return userid
     except ValueError:
         # Invalid token
@@ -146,7 +147,7 @@ def on_new_google_user(data):
 @socketio.on("add calendar")
 def on_add_calendar(data):
     """
-    add a new calednar for user
+    add a new calendar for user
     """
     userid = data["userid"]
     ccode = add_calendar_for_user(userid)
@@ -162,43 +163,10 @@ def on_add_event(data):
     addedEventId = add_event(event)
     print(addedEventId)
 
-
 @socketio.on("get events")
 def send_events_to_calendar(data):
-    print("LOOKING FOR CALCODE: ", data)
     emit_events_to_calender("calender_event", data)
     print("SENT EVENTS!")
-
-
-    
-def time_convert(time,date):
-    time=time.split()
-    if time[1]=="pm":
-        time=time[0]+" PM"
-    elif time[1]=="am":
-        time=time[0]+" AM"
-    military_time = datetime.strptime(time, '%I:%M %p').strftime('%H:%M')
-    date_string = date+"T"+military_time
-    format_date = datetime.strptime(date_string, '%Y-%m-%dT%H:%M')
-    return int(format_date.timestamp())
-    
-@socketio.on("new event")
-def on_new_event(data):
-    """
-    add a new event for to calendar
-    """
-    title = data['title']
-    date = data['date']
-    start = data['start']
-    end = data['end']
-    print(start)
-    print(end)
-    start_time=time_convert(start,date)
-    end_time=time_convert(end,date)
-    print(start_time,end_time)
-    
-    
-   
 
 @app.route("/")
 def hello():
@@ -207,17 +175,6 @@ def hello():
     """
     models.db.create_all()
     db.session.commit()
-    add_event(
-        {
-            "ccode": "2",
-            "title": "Lunch",
-            "start": "1604965556",
-            "end": "1604964556",
-            "desc": "I'm hungry, let's eat",
-        }
-    )
-
-    add_calendar_for_user("3")
     return flask.render_template("index.html")
 
 
