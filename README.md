@@ -11,39 +11,39 @@
 ## 3. Install Socket.IO & Webpack
 
   ```pip install flask-socketio```
-  -
+  
   ```pip install eventlet```
-  -
+  
   ```npm install -g webpack```
-  -
+  
    ```npm install --save-dev webpack```
-  -
+  
    ```npm install socket.io-client --save```
 
 ##4. Setting up Database
 
    ```sudo yum update```
-   -
+   
   ```sudo /usr/local/bin/pip install --upgrade pip```
-  -
+  
   ```sudo /usr/local/bin/pip install psycopg2-binary```
-  -
+  
   ```sudo /usr/local/bin/pip install Flask-SQLAlchemy==2.1```
-  -
+  
   ```sudo yum install postgresql postgresql-server postgresql-devel postgresql-contrib postgresql-docs```
-  -
+  
   ```sudo service postgresql initdb```
-   -
+   
    ```sudo service postgresql start```
-   -
+   
    ```sudo -u postgres createuser --superuser $USER```
-   -
+   
    ```sudo -u postgres createdb $USER```
-   -
+   
    ```psql```
-   -
+   
    ```create user [YOUR_USERNAME] superuser password '[YOUR_PASSWORD]';```
-   -
+   
    Create a .env file
    -  add -> "export DATABASE_URL=postgresql://[YOUR_USERNAME]:[YOUR_PASS]@localhost/postgres"
 ## 5. Link your database
@@ -66,15 +66,15 @@
 ## 7. Install Calandar Packages
   
 ```npm i react-big-calendar```
--
+
 ```npm install moment --save```
--
+
 ```npm i react-tackle-box```
--
+
 ```npm install date-fns --save```
--
+
 ```npm i react-calendar```
--
+
 ```npm i rc-time-picker```
 
 
