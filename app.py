@@ -162,15 +162,14 @@ def on_add_event(data):
     
 def time_convert(time,date):
     time=time.split()
-    if time[1]=="p":
+    if time[1]=="pm":
         time=time[0]+" PM"
-    elif time[1]=="a":
-        time=time[1]+" AM"
+    elif time[1]=="am":
+        time=time[0]+" AM"
     military_time = datetime.strptime(time, '%I:%M %p').strftime('%H:%M')
     date_string = date+"T"+military_time
-    # I'm using date_string[:-9] to skip ".000-0600"
     format_date = datetime.strptime(date_string, '%Y-%m-%dT%H:%M')
-    return format_date.timestamp()
+    return int(format_date.timestamp())
     
 @socketio.on("new event")
 def on_new_event(data):
@@ -181,8 +180,11 @@ def on_new_event(data):
     date = data['date']
     start = data['start']
     end = data['end']
+    print(start)
+    print(end)
     start_time=time_convert(start,date)
     end_time=time_convert(end,date)
+    print(start_time,end_time)
     
     
    

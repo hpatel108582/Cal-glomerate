@@ -12,6 +12,7 @@ import 'rc-time-picker/assets/index.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+  
 export function Cal_comp(){
     const [events, setEvents] = React.useState([]);
     const localizer = momentLocalizer(moment);
@@ -124,15 +125,20 @@ function handleSelect({start, end}){
 
  return (
       <div>
+      <div>
        <button onClick={()=> setModal(true)}> Open Modal </button> 
             <Modal  
                 isOpen={modal}
                 onRequestClose={()=>setModal(false)}
+                className="ReactModal__Overlay"
+                align="center"
             >
             
           <form onSubmit={handleSubmit}>
       
         <h1>Add Event</h1>
+        
+        <h3> Title  </h3>
         <input
           type="text"
           name="title"
@@ -170,6 +176,7 @@ function handleSelect({start, end}){
       
     </form>
      </Modal>
+     </div>
         <Calendar
         //   selectable
           localizer={localizer}
