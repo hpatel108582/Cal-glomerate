@@ -35,7 +35,7 @@ export function Cal_comp(props){
         ],
       );
     });
-  }, []);
+  });
  }
  
 // function handleSelect({start, end}){
@@ -64,7 +64,7 @@ export function Cal_comp(props){
           defaultView={Views.MONTHS}
           max={dates.add(dates.endOf(new Date(2015, 17, 1), 'day'), -1, 'hours')}
           scrollToTime={new Date(1970, 1, 1, 6)}
-          defaultDate={new Date(2020, 11, 1)}
+          defaultDate={new Date(2020, 10, 1)}
         //   onSelectEvent={event => alert(event.title)}
         //   onSelectSlot={handleSelect}
         />

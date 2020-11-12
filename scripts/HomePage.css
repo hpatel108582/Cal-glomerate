@@ -1,0 +1,17 @@
+.conent_wrapper{
+    width:100%;
+}
+.interact_side{
+    width:15%;
+    height:100%;
+    float:left;
+    background-color: pink;
+}
+.calender_side{
+    margin-right: 1%;
+    margin-left:1%;
+    width:83%;
+    height:100%;
+    float: right;
+    
+}

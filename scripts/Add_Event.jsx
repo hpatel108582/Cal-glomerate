@@ -69,7 +69,7 @@ export function Create_event(props){
     }
      return (
             <div>
-       <button onClick={()=> setModal(true)}> Open Modal </button> 
+       <button onClick={()=> setModal(true)}> Create Event </button> 
             <Modal  
                 isOpen={modal}
                 onRequestClose={()=>setModal(false)}
