@@ -13,7 +13,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
   
 export function Cal_comp(props){
-    React.useEffect(() => { Socket.emit('get events', props.ccode[0]); }, []);
     const [events, setEvents] = React.useState([]);
     const localizer = momentLocalizer(moment);
     const [modal, setModal] = React.useState(0);
@@ -29,7 +28,7 @@ export function Cal_comp(props){
     const now = moment().hour(0).minute(0);
     const format = 'hh:mm a';
     const dateToFormat = 'YYYY/MM/DD';
-   
+   React.useEffect(() => { Socket.emit('get events', props.ccode[0]); }, []);
     function onSChange(value) {
  
         console.log(value);
@@ -181,7 +180,6 @@ function handleSelect({start, end}){
      </div>
         <Calendar
         //   selectable
-            className="cal_color"
           localizer={localizer}
           events={events}
           step={60}
