@@ -4,6 +4,7 @@ import { GoogleLogin } from 'react-google-login';
 import { Socket } from './Socket';
 import './loginstyle.css';
 import { Cal_comp } from "./CalenderComp.jsx";
+import { HomePage } from "./LogedInHome";
 
 export default function Login() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -33,7 +34,7 @@ export default function Login() {
   verifiedSession();
 
   if (loggedIn && ccode[0] != -1) {
-    return (<div><Cal_comp ccode={ccode}/></div>);
+    return (<div><HomePage ccode={ccode}/></div>);
   }
 
   return (
