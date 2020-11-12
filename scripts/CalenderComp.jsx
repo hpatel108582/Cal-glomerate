@@ -27,8 +27,8 @@ export function Cal_comp(){
     )
     const [startDate, setStartDate] = useState(new Date());
     const now = moment().hour(0).minute(0);
-   const format = 'hh:mm a';
-   const dateToFormat = 'YYYY/MM/DD';
+    const format = 'hh:mm a';
+    const dateToFormat = 'YYYY/MM/DD';
    
     function onSChange(value) {
  
@@ -57,16 +57,15 @@ export function Cal_comp(){
       
         event.preventDefault(); 
         const { title,date,start,end } =state
-      console.log(title);
-      console.log(date);
-      console.log(start);
-      console.log(end);
+        console.log(title);
+        console.log(date);
+        console.log(start);
+        console.log(end);
       Socket.emit('new event',  {
           'title': title,
           'date':date,
           'start':start,
           'end':end
-          
       })
       
      
@@ -80,12 +79,12 @@ export function Cal_comp(){
         setState({...state,date:moment(newDate).format("YYYY-MM-DD")})
     }
     
-  function new_Event() {
-  React.useEffect(() => {
-    Socket.on('calender_event', (data) => {
-      console.log("title " + data['title']);
-      console.log("start: " +  data['start'] );
-      console.log("end: " + data['end']);
+    function new_Event() {
+        React.useEffect(() => {
+        Socket.on('calender_event', (data) => {
+            console.log("title " + data['title']);
+            console.log("start: " +  data['start'] );
+            console.log("end: " + data['end']);
 
       let intstart = parseInt(data['start']);
       let start = new Date(intstart*1000);
@@ -134,51 +133,52 @@ function handleSelect({start, end}){
                 align="center"
             >
             
-          <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
       
-        <h1>Add Event</h1>
+                    <h1>Add Event</h1>
         
-        <h3> Title  </h3>
-        <input
-          type="text"
-          name="title"
-          value={state.title}
-          onChange={handleChange}
-        />
+                    <h3> Title  </h3>
+                    <input
+                        type="text"
+                        name="title"
+                        value={state.title}
+                        onChange={handleChange}
+                    />
         
-        <h3> Date </h3>
-     <DatePicker selected={startDate} onChange={onDChange} />
+                    <h3> Date </h3>
+                        <DatePicker selected={startDate} onChange={onDChange} />
         
-        <h3> Start Time </h3>
-            <TimePicker 
-                showSecond={false}
-                defaultValue={now}
-                name="starttime"
+                    <h3> Start Time </h3>
+                        <TimePicker 
+                            showSecond={false}
+                            defaultValue={now}
+                            name="starttime"
                 
-                onChange={onSChange}
-                format={format}
-                use12Hours
-                inputReadOnly
-            /> 
-            <h3> End  Time </h3>
-            <TimePicker 
-                showSecond={false}
-                defaultValue={now}
-                name="endtime"
+                            onChange={onSChange}
+                            format={format}
+                            use12Hours
+                            inputReadOnly
+                        /> 
+                    <h3> End  Time </h3>
+                        <TimePicker 
+                            showSecond={false}
+                            defaultValue={now}
+                            name="endtime"
                 
-                onChange={onEChange}
-                format={format}
-                use12Hours
-                inputReadOnly
-            /> 
+                            onChange={onEChange}
+                            format={format}
+                            use12Hours
+                            inputReadOnly
+                        /> 
       
-      <button  type = "submit" onClick={()=> setModal(true)}>Send</button>
+                    <button  type = "submit" onClick={()=> setModal(true)}>Send</button>
       
-    </form>
-     </Modal>
+                </form>
+            </Modal>
      </div>
         <Calendar
         //   selectable
+            className="cal_color"
           localizer={localizer}
           events={events}
           step={60}
