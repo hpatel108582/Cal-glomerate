@@ -5,7 +5,7 @@ Instantiate and define database model definitions.
 # pylint: disable=redefined-builtin
 # pylint: disable=too-few-public-methods
 from app import db
-
+from sqlalchemy.dialects import postgresql
 
 class AuthUser(db.Model):
     """
@@ -47,7 +47,7 @@ class Event(db.Model):
     """
 
     id = db.Column(db.Integer, primary_key=True)
-    ccode = db.Column(db.Integer)
+    ccode = db.Column(postgresql.ARRAY(db.Integer()))
     title = db.Column(db.String(120))
     start = db.Column(db.String(120))
     end = db.Column(db.String(120))

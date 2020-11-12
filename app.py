@@ -51,7 +51,23 @@ def get_sid():
     sid = flask.request.sid
     return sid
 
-
+def emit_events_to_calender(channel, cal_code):
+    '''
+    Emits all calendar events along channel
+    '''
+    sid = get_sid()
+    all_events = [
+        {
+            "start": record.start,
+            "end": record.end,
+            "title": record.title,
+        }
+        for record in db.session.query(models.Event).filter(models.Event.ccode.contains([cal_code])).all()
+    ]
+    for event in all_events:
+        print(event)
+        socketio.emit(channel, event, room=sid)
+        
 ##SOCKET EVENTS
 @socketio.on("connect")
 def on_connect():
@@ -178,6 +194,16 @@ def hello():
     Runs at page-load.
     """
     models.db.create_all()
+    add_event(
+        {
+            "ccode": [1, 2],
+            "title": "Lunch",
+            "start": "1604965556",
+            "end": "1604964556",
+            "desc": "I'm hungry, let's eat",
+        }
+    )
+
     db.session.commit()
 
     return flask.render_template("index.html")
