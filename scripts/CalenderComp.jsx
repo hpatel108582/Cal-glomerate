@@ -24,7 +24,7 @@ export function Cal_comp(props){
       console.log(start);
       let intend = parseInt(data['end']);
       let end = new Date(intend*1000);
-            console.log(end);
+      console.log(end);
 
       let title= data['title'];
             setEvents([
