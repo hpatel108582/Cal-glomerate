@@ -9,7 +9,7 @@ import ExampleControlSlot from './ControlSlot';
 export function Cal_comp(props){
     const [events, setEvents] = React.useState([]);
     const localizer = momentLocalizer(moment);
-    
+  
   React.useEffect(() => { Socket.emit('get events', props.ccode[0]); }, []);
     
   function new_Event() {
