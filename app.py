@@ -13,7 +13,6 @@ import flask_sqlalchemy
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from datetime import datetime
-from dbInterface import dbInterfaceClass
 
 app = flask.Flask(__name__)
 
@@ -40,9 +39,37 @@ CALENDER_EVENT_CHANNEL = "calendar_event"
 
 import models
 
+def push_new_user_to_db(ident, name, email):
+    """
+    Pushes new user to database.
+    """
+    db.session.add(models.AuthUser(ident, name, email))
+    db.session.commit()
 
-dbFunctions = dbInterfaceClass(db, models)
+def add_event(event):
+    """
+    adds an event, returns id of added event
+    """
+    ccode, title, start, end, desc = (
+        event["ccode"],
+        event["title"],
+        event["start"],
+        event["end"],
+        event["desc"],
+    )
+    addedEvent = models.Event(ccode, title, start, end, desc)
+    db.session.add(addedEvent)
+    db.session.commit()
+    return addedEvent.id
 
+def add_calendar_for_user(userid):
+    """
+    adds an event, returns the ccode of the new calendar
+    """
+    addedCalendar = models.Calendars(userid)
+    db.session.add(addedCalendar)
+    db.session.commit()
+    return addedCalendar.ccode
 
 def get_sid():
     """
@@ -105,8 +132,8 @@ def on_new_google_user(data):
             is not None
         )
         if not exists:
-            dbFunctions.push_new_user_to_db(userid, data["name"], data["email"])
-            dbFunctions.add_calendar_for_user(userid)
+            push_new_user_to_db(userid, data["name"], data["email"])
+            add_calendar_for_user(userid)
         all_ccodes = [
             record.ccode
             for record in db.session.query(models.Calendars)
@@ -132,20 +159,14 @@ def on_add_calendar(data):
     add a new calednar for user
     """
     userid = data["userid"]
-    ccode = dbFunctions.add_calendar_for_user(userid)
+    ccode = add_calendar_for_user(userid)
     print(ccode)
 
 
 @socketio.on("get events")
 def send_events_to_calendar(data):
     print("LOOKING FOR CALCODE: ", data)
-    sid = get_sid()
-    all_events = dbFunctions.emit_events_to_calender("calender_event", data, sid)
-
-    for event in all_events:
-        print(event)
-        socketio.emit("calender_event", event, room=sid)
-
+    emit_events_to_calender("calender_event", data)
     print("SENT EVENTS!")
 
 
@@ -176,7 +197,7 @@ def on_new_event(data):
     start_time = time_convert(start, date)
     end_time = time_convert(end, date)
     print(start_time, end_time)
-    addedEventId = dbFunctions.add_event(
+    addedEventId = add_event(
         {
             "ccode": ccode,
             "title": title,
@@ -194,18 +215,7 @@ def hello():
     Runs at page-load.
     """
     models.db.create_all()
-    add_event(
-        {
-            "ccode": [1, 2],
-            "title": "Lunch",
-            "start": "1604965556",
-            "end": "1604964556",
-            "desc": "I'm hungry, let's eat",
-        }
-    )
-
     db.session.commit()
-
     return flask.render_template("index.html")
 
 
