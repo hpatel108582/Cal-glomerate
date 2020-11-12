@@ -87,7 +87,7 @@ def emit_events_to_calender(channel, cal_code):
             "end": record.end,
             "title": record.title,
         }
-        for record in db.session.query(models.Event).filter_by(ccode=cal_code).all()
+        for record in db.session.query(models.Event).filter(models.Event.ccode.contains([cal_code])).all()
     ]
     for event in all_events:
         print(event)
@@ -174,6 +174,16 @@ def hello():
     Runs at page-load.
     """
     models.db.create_all()
+    add_event(
+        {
+            "ccode": [1, 2],
+            "title": "Lunch",
+            "start": "1604965556",
+            "end": "1604964556",
+            "desc": "I'm hungry, let's eat",
+        }
+    )
+
     db.session.commit()
     return flask.render_template("index.html")
 
