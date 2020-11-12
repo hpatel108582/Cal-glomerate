@@ -12,6 +12,7 @@ import flask_socketio
 import flask_sqlalchemy
 from google.oauth2 import id_token
 from google.auth.transport import requests
+from datetime import datetime
 
 app = flask.Flask(__name__)
 
@@ -161,11 +162,43 @@ def on_add_event(data):
     addedEventId = add_event(event)
     print(addedEventId)
 
+
 @socketio.on("get events")
 def send_events_to_calendar(data):
     print("LOOKING FOR CALCODE: ", data)
     emit_events_to_calender("calender_event", data)
     print("SENT EVENTS!")
+
+
+    
+def time_convert(time,date):
+    time=time.split()
+    if time[1]=="pm":
+        time=time[0]+" PM"
+    elif time[1]=="am":
+        time=time[0]+" AM"
+    military_time = datetime.strptime(time, '%I:%M %p').strftime('%H:%M')
+    date_string = date+"T"+military_time
+    format_date = datetime.strptime(date_string, '%Y-%m-%dT%H:%M')
+    return int(format_date.timestamp())
+    
+@socketio.on("new event")
+def on_new_event(data):
+    """
+    add a new event for to calendar
+    """
+    title = data['title']
+    date = data['date']
+    start = data['start']
+    end = data['end']
+    print(start)
+    print(end)
+    start_time=time_convert(start,date)
+    end_time=time_convert(end,date)
+    print(start_time,end_time)
+    
+    
+   
 
 @app.route("/")
 def hello():

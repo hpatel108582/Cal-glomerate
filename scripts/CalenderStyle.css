@@ -512,3 +512,11 @@ button.rbc-input::-moz-focus-inner {
   height: 1px;
   background-color: #74ad31;
   pointer-events: none; }
+.cal_color{
+  background: rgb(0,0,0);
+background: linear-gradient(180deg, rgba(0,0,0,1) 48%, rgba(255,255,255,1) 100%);
+}
+.ReactModal__Overlay {
+    z-index: 1000;
+    width: 90%;
+}
