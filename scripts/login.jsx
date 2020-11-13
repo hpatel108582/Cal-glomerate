@@ -35,21 +35,23 @@ export default function Login() {
       });
     }, []);
   }
+  
   verifiedSession();
 
-  // if (loggedIn && ccode[0] != -1) {
-  //   return (
-  //     <div>
-  //       <HomePage ccode={ccode} />
-  //     </div>
-  //   );
-  // }
-
+  if (loggedIn && ccode[0] != -1) {
+    return (
+      <div className="outermost">
+      <h1 className="header">Calglomerate</h1>
+      <div className="container">
+          <HomePage ccode={ccode} />
+      </div>
+    </div>
+    );
+  }
   return (
     <div className="outermost">
       <h1 className="header">Calglomerate</h1>
       <div className="container">
-        {!loggedIn ? (
           <GoogleLogin
             clientId="658056760445-ejq8q635n1948vqieqf95vsa6c6e1fvp.apps.googleusercontent.com"
             buttonText="Login"
@@ -57,9 +59,6 @@ export default function Login() {
             onFailure={loginUserFail}
             cookiePolicy="single_host_origin"
           />
-        ) : (
-          <HomePage ccode={ccode} />
-        )}
       </div>
     </div>
   );
