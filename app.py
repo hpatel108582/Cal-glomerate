@@ -5,6 +5,7 @@ Python Appeasment
 # pylint: disable=wrong-import-position
 # pylint: disable=global-statement
 import os
+import logging
 from os.path import join, dirname
 from dotenv import load_dotenv
 import flask
@@ -13,6 +14,8 @@ import flask_sqlalchemy
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from datetime import datetime
+
+logging.getLogger("werkzeug").setLevel(logging.ERROR)
 
 app = flask.Flask(__name__)
 
@@ -48,17 +51,10 @@ def push_new_user_to_db(ident, name, email):
     db.session.commit()
 
 
-def add_event(event):
+def add_event(ccode, title, start, end, desc):
     """
     adds an event, returns id of added event
     """
-    ccode, title, start, end, desc = (
-        [event["ccode"]],
-        event["title"],
-        event["start"],
-        event["end"],
-        event["desc"],
-    )
     addedEvent = models.Event(ccode, title, start, end, desc)
     db.session.add(addedEvent)
     db.session.commit()
@@ -100,7 +96,7 @@ def emit_events_to_calender(channel, cal_code):
     ]
     for event in all_events:
         print(event)
-        socketio.emit(channel, event, room=sid)
+    socketio.emit(channel, all_events, room=sid)
 
 
 ##SOCKET EVENTS
@@ -174,20 +170,8 @@ def on_add_calendar(data):
 @socketio.on("get events")
 def send_events_to_calendar(data):
     print("LOOKING FOR CALCODE: ", data)
-    emit_events_to_calender("calender_event", data)
+    emit_events_to_calender("recieve all events", data)
     print("SENT EVENTS!")
-
-
-def time_convert(time, date):
-    time = time.split()
-    if time[1] == "pm":
-        time = time[0] + " PM"
-    elif time[1] == "am":
-        time = time[0] + " AM"
-    military_time = datetime.strptime(time, "%I:%M %p").strftime("%H:%M")
-    date_string = date + "T" + military_time
-    format_date = datetime.strptime(date_string, "%Y-%m-%dT%H:%M")
-    return int(format_date.timestamp())
 
 
 @socketio.on("new event")
@@ -195,6 +179,7 @@ def on_new_event(data):
     """
     add a new event for to calendar
     """
+    print(data)
     title = data["title"]
     date = data["date"]
     start = data["start"]
@@ -202,21 +187,18 @@ def on_new_event(data):
     ccode = data["ccode"]
     print(start)
     print(end)
-    addedEventId = add_event(
-        {
-            "ccode": ccode,
-            "title": title,
-            "start": start,
-            "end": end,
-            "desc": "some words",
-        }
+    addedEventId = add_event([ccode], title, start, end, "some words")
+    print("SENDING INDIVIDUAL EVENT")
+    socketio.emit(
+        "calender_event", {"title": title, "start": start, "end": end}, room=get_sid()
     )
     print(addedEventId)
 
+
 @socketio.on("cCodeToMerge")
 def on_merge_calendar(data):
-    merge_code=data['mergeCcode']['mergeInput']
-    print("LOOKING FOR CALCODE", data['mergeCcode']['mergeInput'])
+    merge_code = data["mergeCcode"]["mergeInput"]
+    print("LOOKING FOR CALCODE", data["mergeCcode"]["mergeInput"])
     exists = (
         db.session.query(models.Calendars.ccode).filter_by(ccode=merge_code).scalar()
         is not None
@@ -226,6 +208,7 @@ def on_merge_calendar(data):
             raise ValueError
     except ValueError:
         print("CCODE DOES NOT EXIST!")
+
 
 @app.route("/")
 def hello():
