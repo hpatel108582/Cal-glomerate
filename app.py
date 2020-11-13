@@ -197,8 +197,9 @@ def on_new_event(data):
 
 @socketio.on("cCodeToMerge")
 def on_merge_calendar(data):
-    merge_code = data["mergeCcode"]["mergeInput"]
-    print("LOOKING FOR CALCODE", data["mergeCcode"]["mergeInput"])
+    merge_code = int(data['userToMergeWith'])
+    print("LOOKING FOR CALCODE", data['userToMergeWith'])
+    cal_code = int(data['currentUser'])
     exists = (
         db.session.query(models.Calendars.ccode).filter_by(ccode=merge_code).scalar()
         is not None
@@ -206,6 +207,11 @@ def on_merge_calendar(data):
     try:
         if not exists:
             raise ValueError
+        for record in db.session.query(models.Event).filter(models.Event.ccode.contains([merge_code])).all():
+            if cal_code not in record.ccode:
+                record.ccode.append(cal_code)
+                db.session.commit()
+            emit_events_to_calender("recieve all events", cal_code)
     except ValueError:
         print("CCODE DOES NOT EXIST!")
 

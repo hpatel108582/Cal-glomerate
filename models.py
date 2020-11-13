@@ -6,6 +6,22 @@ Instantiate and define database model definitions.
 # pylint: disable=too-few-public-methods
 from app import db
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.ext.mutable import Mutable
+from sqlalchemy.dialects.postgresql import ARRAY
+
+class MutableList(Mutable, list):
+    def append(self, value):
+        list.append(self, value)
+        self.changed()
+
+    @classmethod
+    def coerce(cls, key, value):
+        if not isinstance(value, MutableList):
+            if isinstance(value, list):
+                return MutableList(value)
+            return Mutable.coerce(key, value)
+        else:
+            return value
 
 class AuthUser(db.Model):
     """
@@ -47,7 +63,7 @@ class Event(db.Model):
     """
 
     id = db.Column(db.Integer, primary_key=True)
-    ccode = db.Column(postgresql.ARRAY(db.Integer()))
+    ccode = db.Column(MutableList.as_mutable(postgresql.ARRAY(db.Integer)))
     title = db.Column(db.String(120))
     start = db.Column(db.String(120))
     end = db.Column(db.String(120))
