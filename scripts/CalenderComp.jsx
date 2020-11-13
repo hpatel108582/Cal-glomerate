@@ -8,8 +8,7 @@ import { Socket } from './Socket';
 export function Cal_comp(props) {
   const [events, setEvents] = React.useState([]);
   const localizer = momentLocalizer(moment);
-  console.log('sjkdfn');
-  console.log(events);
+  
   React.useEffect(() => {
     console.log(events);
     Socket.emit('get events', props.ccode[0]);
@@ -30,29 +29,26 @@ export function Cal_comp(props) {
       );
     });
   }, []);
-
-  function new_Event(events) {
+  function new_Event() {
     React.useEffect(() => {
       Socket.on('calender_event', (data) => {
+        console.log(data);
+        console.log('title ' + data['title']);
+        console.log('start: ' + data['start']);
+        console.log('end: ' + data['end']);
         let intstart = parseInt(data['start']);
         let start = new Date(intstart * 1000);
         let intend = parseInt(data['end']);
         let end = new Date(intend * 1000);
-
+        console.log(end);
         let title = data['title'];
-        setEvents([
-          ...events,
-          {
-            start,
-            end,
-            title
-          }
-        ]);
+        console.log("ADDING NEW INDIVIDUAL EVENT");
+        setEvents((prevEvents) => [...prevEvents, {start, end, title}]);
       });
-    });
-  }
-
-  new_Event(events);
+    }, []);
+  }      
+  
+  new_Event();
 
   return (
     <div>
