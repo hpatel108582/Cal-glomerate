@@ -8,16 +8,13 @@ export function MergeCalenders({ ccode }) {
   function handleSubmit(event) {
     event.preventDefault();
     Socket.emit('cCodeToMerge', {
-      mergeCcode: { mergeInput }
+      currentUser: ccode[0],
+      userToMergeWith: mergeInput
     });
     console.log(
       `you entered the C-code ${mergeInput} your calender will merge with that input`
     );
     setMergeInput('');
-    Socket.emit('merge with', {
-      currentUser: ccode[0],
-      userToMergeWith: mergeInput
-    });
   }
 
   function changed(event) {
@@ -51,7 +48,7 @@ export function MergeCalenders({ ccode }) {
                   />
                 </Stack.Item>
                 <Stack.Item grow={1}>
-                  <DefaultButton>Merge Calenders</DefaultButton>
+                 <DefaultButton onClick={handleSubmit}>Merge Calendars</DefaultButton>
                 </Stack.Item>
               </Stack>
             </form>
