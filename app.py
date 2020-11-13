@@ -53,7 +53,7 @@ def add_event(event):
     adds an event, returns id of added event
     """
     ccode, title, start, end, desc = (
-        event["ccode"],
+        [event["ccode"]],
         event["title"],
         event["start"],
         event["end"],
@@ -213,6 +213,19 @@ def on_new_event(data):
     )
     print(addedEventId)
 
+@socketio.on("cCodeToMerge")
+def on_merge_calendar(data):
+    merge_code=data['mergeCcode']['mergeInput']
+    print("LOOKING FOR CALCODE", data['mergeCcode']['mergeInput'])
+    exists = (
+        db.session.query(models.Calendars.ccode).filter_by(ccode=merge_code).scalar()
+        is not None
+    )
+    try:
+        if not exists:
+            raise ValueError
+    except ValueError:
+        print("CCODE DOES NOT EXIST!")
 
 @app.route("/")
 def hello():
