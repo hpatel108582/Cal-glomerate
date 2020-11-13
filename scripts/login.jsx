@@ -3,19 +3,23 @@ import ReactDOM from 'react-dom';
 import { GoogleLogin } from 'react-google-login';
 import { Socket } from './Socket';
 import './loginstyle.css';
-import { Cal_comp } from "./CalenderComp.jsx";
-import { HomePage } from "./LogedInHome";
+import { Cal_comp } from './CalenderComp.jsx';
+import { HomePage } from './LogedInHome';
 
 export default function Login() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(true);
   const [username, setUsername] = useState('');
-  const [ccode, setCcode] = useState([-1]);
-  
+  const [ccode, setCcode] = useState([1]);
+
   function loginUser(response) {
     const name = response.getBasicProfile().getName();
     const email = response.getBasicProfile().getEmail();
     const idToken = response.getAuthResponse().id_token;
-    Socket.emit('new google user', {name: name, email: email, idtoken: idToken});
+    Socket.emit('new google user', {
+      name: name,
+      email: email,
+      idtoken: idToken
+    });
   }
 
   function loginUserFail() {
@@ -34,7 +38,11 @@ export default function Login() {
   verifiedSession();
 
   if (loggedIn && ccode[0] != -1) {
-    return (<div><HomePage ccode={ccode}/></div>);
+    return (
+      <div>
+        <HomePage ccode={ccode} />
+      </div>
+    );
   }
 
   return (

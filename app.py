@@ -39,12 +39,14 @@ CALENDER_EVENT_CHANNEL = "calendar_event"
 
 import models
 
+
 def push_new_user_to_db(ident, name, email):
     """
     Pushes new user to database.
     """
     db.session.add(models.AuthUser(ident, name, email))
     db.session.commit()
+
 
 def add_event(event):
     """
@@ -62,6 +64,7 @@ def add_event(event):
     db.session.commit()
     return addedEvent.id
 
+
 def add_calendar_for_user(userid):
     """
     adds an event, returns the ccode of the new calendar
@@ -71,6 +74,7 @@ def add_calendar_for_user(userid):
     db.session.commit()
     return addedCalendar.ccode
 
+
 def get_sid():
     """
     returns sid.
@@ -78,10 +82,11 @@ def get_sid():
     sid = flask.request.sid
     return sid
 
+
 def emit_events_to_calender(channel, cal_code):
-    '''
+    """
     Emits all calendar events along channel
-    '''
+    """
     sid = get_sid()
     all_events = [
         {
@@ -89,12 +94,15 @@ def emit_events_to_calender(channel, cal_code):
             "end": record.end,
             "title": record.title,
         }
-        for record in db.session.query(models.Event).filter(models.Event.ccode.contains([cal_code])).all()
+        for record in db.session.query(models.Event)
+        .filter(models.Event.ccode.contains([cal_code]))
+        .all()
     ]
     for event in all_events:
         print(event)
         socketio.emit(channel, event, room=sid)
-        
+
+
 ##SOCKET EVENTS
 @socketio.on("connect")
 def on_connect():
@@ -194,15 +202,12 @@ def on_new_event(data):
     ccode = data["ccode"]
     print(start)
     print(end)
-    start_time = time_convert(start, date)
-    end_time = time_convert(end, date)
-    print(start_time, end_time)
     addedEventId = add_event(
         {
             "ccode": ccode,
             "title": title,
-            "start": start_time,
-            "end": end_time,
+            "start": start,
+            "end": end,
             "desc": "some words",
         }
     )
