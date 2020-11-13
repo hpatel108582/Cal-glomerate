@@ -8,7 +8,7 @@ import { Socket } from './Socket';
 export function Cal_comp(props) {
   const [events, setEvents] = React.useState([]);
   const localizer = momentLocalizer(moment);
-  
+
   React.useEffect(() => {
     console.log(events);
     Socket.emit('get events', props.ccode[0]);
@@ -42,16 +42,16 @@ export function Cal_comp(props) {
         let end = new Date(intend * 1000);
         console.log(end);
         let title = data['title'];
-        console.log("ADDING NEW INDIVIDUAL EVENT");
-        setEvents((prevEvents) => [...prevEvents, {start, end, title}]);
+        console.log('ADDING NEW INDIVIDUAL EVENT');
+        setEvents((prevEvents) => [...prevEvents, { start, end, title }]);
       });
     }, []);
-  }      
-  
+  }
+
   new_Event();
 
   return (
-    <div>
+    <div style={{ height: '100%' }}>
       <Calendar
         //   selectable
         localizer={localizer}
