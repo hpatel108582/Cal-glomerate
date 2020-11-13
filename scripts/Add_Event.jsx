@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import { Socket } from './Socket';
-import ExampleControlSlot from './ControlSlot';
-// import Modal from 'react-modal';
 import TimePicker from 'react-time-picker';
-import ReactDOM from 'react-dom';
-import 'rc-time-picker/assets/index.css';
 import {
   ContextualMenu,
   DatePicker,
@@ -20,12 +16,12 @@ export function Create_event(props) {
   const [startTime, setStartTime] = React.useState('10:00');
   const [endTime, setEndTime] = React.useState('11:00');
   const [title, setTitle] = React.useState('Title');
-  const [selectedDate, setSelectedDate] = useState(new Date('2000', 12, 3));
-  const now = moment().hour(0).minute(0);
-  const format = 'hh:mm a';
-  React.useEffect(() => {
-    Socket.emit('get events', props.ccode[0]);
-  }, []);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  //   const now = moment().hour(0).minute(0);
+  //   const format = 'hh:mm a';
+  //   React.useEffect(() => {
+  //     Socket.emit('get events', props.ccode[0]);
+  //   }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -48,11 +44,9 @@ export function Create_event(props) {
       end,
       ccode: props.ccode[0]
     });
+    setModal(false);
   };
 
-  function onDChange(newDate) {
-    setState({ ...state, date: moment(newDate).format('YYYY-MM-DD') });
-  }
   return (
     <div>
       <DefaultButton
