@@ -51,7 +51,7 @@ def add_event(event):
     adds an event, returns id of added event
     """
     ccode, title, start, end, desc = (
-        event["ccode"],
+        [event["ccode"]],
         event["title"],
         event["start"],
         event["end"],
@@ -208,6 +208,9 @@ def on_new_event(data):
     )
     print(addedEventId)
 
+@socketio.on("cCodeToMerge")
+def on_merge_calendar(data):
+    print("LOOKING FOR CALCODE", data['mergeCcode']['mergeInput'])
 
 @app.route("/")
 def hello():
