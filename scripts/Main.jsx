@@ -1,12 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Login from './login';
-import { Cal_comp } from './CalenderComp';
+import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
 
+initializeIcons();
 const rootElement = document.getElementById('content');
 ReactDOM.render(
   <React.StrictMode>
     <Login />
   </React.StrictMode>,
-  rootElement,
+  rootElement
 );

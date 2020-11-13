@@ -9,10 +9,37 @@ import ExampleControlSlot from './ControlSlot';
 export function Cal_comp(props) {
   const [events, setEvents] = React.useState([]);
   const localizer = momentLocalizer(moment);
+  console.log('sjkdfn');
+  console.log(events);
+  React.useEffect(() => {
+    Socket.emit('get events', props.ccode[0]);
+    Socket.on('recieve all events', (data) => {
+      console.log('sdkfjnd');
+      console.log(data);
+      setEvents(
+        data.map((event) => {
+          console.log(event);
+          let intstart = parseInt(event['start']);
+          let start = new Date(intstart * 1000);
+          console.log(start);
+          let intend = parseInt(event['end']);
+          let end = new Date(intend * 1000);
+          console.log(end);
+          let title = event['title'];
+          return {
+            start,
+            end,
+            title
+          };
+        })
+      );
+    });
+  }, []);
 
   function new_Event() {
     React.useEffect(() => {
       Socket.on('calender_event', (data) => {
+        console.log(data);
         console.log('title ' + data['title']);
         console.log('start: ' + data['start']);
         console.log('end: ' + data['end']);
@@ -25,31 +52,13 @@ export function Cal_comp(props) {
         console.log(end);
 
         let title = data['title'];
-        setEvents([
-          ...events,
-          {
-            start,
-            end,
-            title
-          }
-        ]);
+        // const newEvents = [...events];
+        console.log(events);
+        // console.log(newEvents);
+        // setEvents(newEvents);
       });
-    });
+    }, []);
   }
-
-  // function handleSelect({start, end}){
-  //     const title = window.prompt('New Event name');
-  //     if (title)
-  //       setEvents([
-  //           ...events,
-  //           {
-  //             start,
-  //             end,
-  //             title,
-  //           },
-  //         ],
-  //       );
-  //   }
 
   new_Event();
 
