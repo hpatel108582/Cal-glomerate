@@ -10,6 +10,7 @@ import {
   Stack,
   TextField
 } from 'office-ui-fabric-react';
+import { Card } from '@uifabric/react-cards';
 
 export function Create_event(props) {
   const [modal, setModal] = React.useState(false);
@@ -49,13 +50,15 @@ export function Create_event(props) {
 
   return (
     <div>
-      <DefaultButton
-        text="Add Event"
-        onClick={() => {
-          setModal(true);
-        }}
-        allowDisabledFocus
-      />
+      <Card style={{ background: 'white' }}>
+        <DefaultButton
+          text="Add Event"
+          onClick={() => {
+            setModal(true);
+          }}
+          allowDisabledFocus
+        />
+      </Card>
       <Modal
         titleAriaId={'Add Event'}
         isOpen={modal}

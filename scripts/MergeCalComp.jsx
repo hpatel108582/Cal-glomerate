@@ -1,3 +1,5 @@
+import { Card } from '@uifabric/react-cards';
+import { DefaultButton, Stack, TextField } from 'office-ui-fabric-react';
 import React, { useState } from 'react';
 import { Socket } from './Socket';
 
@@ -25,19 +27,37 @@ export function MergeCalenders({ ccode }) {
 
   return (
     <div>
-      <div>
-        <p>Your Calender code is {ccode[0]}</p>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={mergeInput}
-          onChange={changed}
-          placeholder="########"
-          required
-        />
-        <button type="submit">Merge Calenders</button>
-      </form>
+      <Stack tokens={{ childrenGap: 10 }}>
+        <Card style={{ background: 'white' }}>
+          <h2>Actions</h2>
+        </Card>
+
+        <Card style={{ background: 'white' }}>
+          <p>Your Calender code is {ccode[0]}</p>
+        </Card>
+        <Card style={{ background: 'white' }}>
+          <Card.Item>
+            <h3 style={{ paddingTop: '20px' }}>Add someone else's calendar</h3>
+          </Card.Item>
+          <Card.Item>
+            <form onSubmit={handleSubmit}>
+              <Stack horizontal tokens={{ childrenGap: 0, padding: 5 }}>
+                <Stack.Item grow={4}>
+                  <TextField
+                    type="text"
+                    value={mergeInput}
+                    onChange={changed}
+                    placeholder="########"
+                  />
+                </Stack.Item>
+                <Stack.Item grow={1}>
+                  <DefaultButton>Merge Calenders</DefaultButton>
+                </Stack.Item>
+              </Stack>
+            </form>
+          </Card.Item>
+        </Card>
+      </Stack>
     </div>
   );
 }
