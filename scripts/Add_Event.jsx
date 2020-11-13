@@ -2,114 +2,107 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import { Socket } from './Socket';
 import ExampleControlSlot from './ControlSlot';
-import Modal from 'react-modal';
-import TimePicker from 'rc-time-picker';
+// import Modal from 'react-modal';
+import TimePicker from 'react-time-picker';
 import ReactDOM from 'react-dom';
 import 'rc-time-picker/assets/index.css';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import {
+  ContextualMenu,
+  DatePicker,
+  DefaultButton,
+  Modal,
+  Stack,
+  TextField
+} from 'office-ui-fabric-react';
 
 export function Create_event(props) {
   const [modal, setModal] = React.useState(false);
-  const [state, setState] = React.useState({
-    title: '',
-    start: '',
-    end: '',
-    date: ''
-  });
-  const [startDate, setStartDate] = useState(new Date());
+  const [startTime, setStartTime] = React.useState('10:00');
+  const [endTime, setEndTime] = React.useState('11:00');
+  const [title, setTitle] = React.useState('Title');
+  const [selectedDate, setSelectedDate] = useState(new Date('2000', 12, 3));
   const now = moment().hour(0).minute(0);
   const format = 'hh:mm a';
-  const dateToFormat = 'YYYY/MM/DD';
   React.useEffect(() => {
     Socket.emit('get events', props.ccode[0]);
   }, []);
-  function onSChange(value) {
-    console.log(value);
-    setState({ ...state, start: value.format(format) });
-  }
 
-  function onEChange(value) {
-    console.log(value && value.format(format));
-    setState({ ...state, end: value.format(format) });
-  }
-
-  function handleChange(evt) {
-    const value = evt.target.value;
-    setState({
-      ...state,
-      [evt.target.name]: value
-    });
-  }
   const handleSubmit = (event) => {
     event.preventDefault();
-    const { title, date, start, end } = state;
     console.log(title);
-    console.log(date);
+    console.log(selectedDate);
+    console.log(startTime);
+    console.log(endTime);
+    const start = moment(
+      selectedDate.toISOString().split('T')[0] + ' ' + startTime
+    ).format('X');
+
+    const end = moment(
+      selectedDate.toISOString().split('T')[0] + ' ' + endTime
+    ).format('X');
     console.log(start);
-    console.log(end);
     Socket.emit('new event', {
       title: title,
-      date: date,
-      start: start,
-      end: end,
+      date: selectedDate,
+      start,
+      end,
       ccode: props.ccode[0]
     });
   };
 
-  function onDChange(value) {
-    console.log(value);
-    console.log(typeof value);
-    var newDate = value.toString();
+  function onDChange(newDate) {
     setState({ ...state, date: moment(newDate).format('YYYY-MM-DD') });
   }
   return (
     <div>
-      <button onClick={() => setModal(true)}> Create Event </button>
+      <DefaultButton
+        text="Add Event"
+        onClick={() => {
+          setModal(true);
+        }}
+        allowDisabledFocus
+      />
       <Modal
+        titleAriaId={'Add Event'}
         isOpen={modal}
-        onRequestClose={() => setModal(false)}
-        className="ReactModal__Overlay"
-        align="center"
+        onDismiss={() => {
+          setModal(false);
+        }}
+        isBlocking={false}
+        // containerClassName={contentStyles.container}
+        dragOptions={{
+          moveMenuItemText: 'Move',
+          closeMenuItemText: 'Close',
+          menu: ContextualMenu
+        }}
       >
         <form onSubmit={handleSubmit}>
-          <h1>Add Event</h1>
+          <Stack tokens={{ childrenGap: 10, padding: 20 }}>
+            <h1>Add Event</h1>
 
-          <h3> Title </h3>
-          <input
-            type="text"
-            name="title"
-            value={state.title}
-            onChange={handleChange}
-          />
+            <h3> Title </h3>
+            <TextField
+              label="title"
+              value={title}
+              onChange={(val) => {
+                setTitle(val.target.value);
+              }}
+            />
 
-          <h3> Date </h3>
-          <DatePicker selected={startDate} onChange={onDChange} />
+            <h3> Date </h3>
+            <DatePicker value={selectedDate} onSelectDate={setSelectedDate} />
 
-          <h3> Start Time </h3>
-          <TimePicker
-            showSecond={false}
-            defaultValue={now}
-            name="starttime"
-            onChange={onSChange}
-            format={format}
-            use12Hours
-            inputReadOnly
-          />
-          <h3> End Time </h3>
-          <TimePicker
-            showSecond={false}
-            defaultValue={now}
-            name="endtime"
-            onChange={onEChange}
-            format={format}
-            use12Hours
-            inputReadOnly
-          />
+            <h3> Start Time </h3>
+            <Stack.Item>
+              <TimePicker onChange={setStartTime} value={startTime} />
+            </Stack.Item>
+            <h3> End Time </h3>
+            <Stack.Item>
+              <TimePicker onChange={setEndTime} value={endTime} />
+            </Stack.Item>
 
-          <button type="submit" onClick={() => setModal(true)}>
-            Send
-          </button>
+            <DefaultButton onClick={handleSubmit}>Send</DefaultButton>
+          </Stack>
         </form>
       </Modal>
     </div>
