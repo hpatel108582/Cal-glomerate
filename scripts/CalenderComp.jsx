@@ -4,7 +4,6 @@ import * as dates from './dates';
 import moment from 'moment';
 import './CalenderStyle.css';
 import { Socket } from './Socket';
-import ExampleControlSlot from './ControlSlot';
 
 export function Cal_comp(props) {
   const [events, setEvents] = React.useState([]);
@@ -12,19 +11,15 @@ export function Cal_comp(props) {
   console.log('sjkdfn');
   console.log(events);
   React.useEffect(() => {
+    console.log(events);
     Socket.emit('get events', props.ccode[0]);
     Socket.on('recieve all events', (data) => {
-      console.log('sdkfjnd');
-      console.log(data);
       setEvents(
         data.map((event) => {
-          console.log(event);
           let intstart = parseInt(event['start']);
           let start = new Date(intstart * 1000);
-          console.log(start);
           let intend = parseInt(event['end']);
           let end = new Date(intend * 1000);
-          console.log(end);
           let title = event['title'];
           return {
             start,
@@ -36,31 +31,28 @@ export function Cal_comp(props) {
     });
   }, []);
 
-  function new_Event() {
+  function new_Event(events) {
     React.useEffect(() => {
       Socket.on('calender_event', (data) => {
-        console.log(data);
-        console.log('title ' + data['title']);
-        console.log('start: ' + data['start']);
-        console.log('end: ' + data['end']);
-
         let intstart = parseInt(data['start']);
         let start = new Date(intstart * 1000);
-        console.log(start);
         let intend = parseInt(data['end']);
         let end = new Date(intend * 1000);
-        console.log(end);
 
         let title = data['title'];
-        // const newEvents = [...events];
-        console.log(events);
-        // console.log(newEvents);
-        // setEvents(newEvents);
+        setEvents([
+          ...events,
+          {
+            start,
+            end,
+            title
+          }
+        ]);
       });
-    }, []);
+    });
   }
 
-  new_Event();
+  new_Event(events);
 
   return (
     <div>

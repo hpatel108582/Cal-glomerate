@@ -44,11 +44,9 @@ export function Create_event(props) {
       end,
       ccode: props.ccode[0]
     });
+    setModal(false);
   };
 
-  function onDChange(newDate) {
-    setState({ ...state, date: moment(newDate).format('YYYY-MM-DD') });
-  }
   return (
     <div>
       <DefaultButton

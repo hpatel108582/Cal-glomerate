@@ -5,6 +5,7 @@ Python Appeasment
 # pylint: disable=wrong-import-position
 # pylint: disable=global-statement
 import os
+import logging
 from os.path import join, dirname
 from dotenv import load_dotenv
 import flask
@@ -13,6 +14,8 @@ import flask_sqlalchemy
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from datetime import datetime
+
+logging.getLogger("werkzeug").setLevel(logging.ERROR)
 
 app = flask.Flask(__name__)
 
