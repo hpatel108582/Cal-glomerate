@@ -48,7 +48,9 @@ export function MergeCalenders({ ccode }) {
                   />
                 </Stack.Item>
                 <Stack.Item grow={1}>
-                 <DefaultButton onClick={handleSubmit}>Merge Calendars</DefaultButton>
+                  <DefaultButton onClick={handleSubmit}>
+                    Merge Calendars
+                  </DefaultButton>
                 </Stack.Item>
               </Stack>
             </form>
