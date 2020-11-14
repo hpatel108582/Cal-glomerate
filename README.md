@@ -1,5 +1,6 @@
 # Cal-Glomerate
 
+#https://calglomerate.herokuapp.com/
 
 ## 1. Upgrade Node upgrade
 
@@ -82,3 +83,26 @@
 
 
 ##  make sure to sudo service postgresql start.
+
+## Individual work
+###Worked on as group
+```push to heroku```
+### Matt: 
+```Worked on front end.``` 
+```Displayed the calender component that we are using and created events to accept it.```
+```Created merge front-end that will. ```
+
+### Sam:
+``` worked on style```
+```worked on frontend```
+```added microsoft ui elements to frontend```
+
+### Harsh:
+```created add event button```
+```unit testing```
+
+### David: 
+```Worked on database backend```
+```worked on google auth```
+```worked on database```
+
