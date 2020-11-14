@@ -1,5 +1,5 @@
 """
-Python Appeasment
+Main flask server functionality and logic.
 """
 # pylint: disable=no-member
 # pylint: disable=wrong-import-position
@@ -192,7 +192,7 @@ def on_new_event(data):
     socketio.emit(
         "calender_event", {"title": title, "start": start, "end": end}, room=get_sid()
     )
-    print(addedEventId)
+    return(addedEventId)
 
 
 @socketio.on("cCodeToMerge")
