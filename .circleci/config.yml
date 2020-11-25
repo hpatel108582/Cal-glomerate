@@ -12,7 +12,8 @@ jobs:
       - python/install-deps
       - python/save-cache
       - run:
-          command: python ./mocked1.py
+          command: python app.py
+          command: python tests/mocked1.py
           name: Cal-glomerate
 
 workflows:
