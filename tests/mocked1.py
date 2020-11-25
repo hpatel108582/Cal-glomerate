@@ -11,7 +11,7 @@ import unittest
 import unittest.mock as mock
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join("..")))
+sys.path.append(os.path.abspath(os.path.join('..')))
 import models
 import app
 from alchemy_mock.mocking import AlchemyMagicMock

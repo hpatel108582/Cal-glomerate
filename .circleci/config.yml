@@ -16,12 +16,6 @@ jobs:
           command: cd tests
           name: In dir 
       - run:
-          command: import sys
-          name: system import  
-      - run:
-          command: import os
-          name: os import 
-      - run:
           command: sys.path.append(os.path.abspath(os.path.join("..")))
           name: lol
       - run:
