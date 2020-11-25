@@ -12,9 +12,26 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
-
       - run:
-          command: python project/tests/mocked1.py
+          command: cd tests
+          name: In dir 
+      - run:
+          command: import sys
+          name: system import  
+      - run:
+          command: import os
+          name: os import 
+      - run:
+          command: sys.path.append(os.path.abspath(os.path.join("..")))
+          name: lol
+      - run:
+          command: import app
+          name: app import 
+      - run:
+          command: import models
+          name: models import 
+      - run:
+          command: python tests/mocked1.py
           name: Cal-glomerate
 
 workflows:
