@@ -13,18 +13,6 @@ jobs:
       - python/install-deps
       - python/save-cache
       - run:
-          command: cd tests
-          name: In dir 
-      - run:
-          command: sys.path.append(os.path.abspath(os.path.join("..")))
-          name: lol
-      - run:
-          command: import app
-          name: app import 
-      - run:
-          command: import models
-          name: models import 
-      - run:
           command: python tests/mocked1.py
           name: Cal-glomerate
 
