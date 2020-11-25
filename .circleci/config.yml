@@ -1,5 +1,6 @@
 version: 2.1
 
+
 orbs:
   python: circleci/python@0.2.1
 
@@ -11,8 +12,10 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
-      - run:
+      - run: 
           command: python app.py
+          name: Main
+      - run:
           command: python tests/mocked1.py
           name: Cal-glomerate
 
