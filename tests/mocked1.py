@@ -11,10 +11,9 @@ import unittest
 import unittest.mock as mock
 import sys
 import os
-
 sys.path.append(os.path.abspath(os.path.join("..")))
-import app
 import models
+import app
 from alchemy_mock.mocking import AlchemyMagicMock
 
 KEY_INPUT = "arg1"
